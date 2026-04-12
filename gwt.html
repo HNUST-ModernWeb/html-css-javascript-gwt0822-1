@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息卡片</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 页面背景 */
+        body {
+            background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        /* 页面标题 */
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        /* 卡片容器：居中、阴影、圆角 */
+        .card {
+            background-color: #ffffff;
+            width: 400px;
+            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.8rem;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        /* 卡片加载动画（创新加分） */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 头像容器 */
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        /* 圆形头像（核心修复：确保图片正常渲染） */
+        #avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #409eff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* 确保图片不被当成文本渲染 */
+            display: block;
+        }
+
+        /* 头像hover效果 */
+        #avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+        }
+
+        /* 头像更换标签 */
+        .avatar-label {
+            font-size: 0.9rem;
+            color: #409eff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .avatar-label:hover {
+            color: #66b1ff;
+            text-decoration: underline;
+        }
+
+        /* 信息项通用样式 */
+        .info-item {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .info-item label {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        /* 输入框样式 */
+        #name-input, #bio-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #dcdfe6;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: inherit;
+        }
+
+        #name-input:focus, #bio-input:focus {
+            outline: none;
+            border-color: #409eff;
+            box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.15);
+        }
+
+        #bio-input {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        /* 显示文本样式（保存后切换） */
+        #name-display, #bio-display {
+            font-size: 1.05rem;
+            color: #606266;
+            line-height: 1.6;
+            display: none;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #name-display:hover, #bio-display:hover {
+            background-color: #f1f3f5;
+        }
+
+        /* 保存按钮样式 */
+        #save-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #409eff;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        /* 按钮hover效果 */
+        #save-btn:hover {
+            background-color: #66b1ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(64, 158, 255, 0.25);
+        }
+
+        #save-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 隐藏文件上传输入框 */
+        #avatar-upload {
+            display: none;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .card {
+                width: 90%;
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            #avatar {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>个人信息卡片</h1>
+
+    <!-- 卡片容器 -->
+    <div class="card">
+        <!-- 头像区域（修复：确保img标签正确渲染） -->
+        <div class="avatar-container">
+            < img id="avatar" src="https://picsum.photos/200/200?random=1" alt="个人头像">
+            <input type="file" id="avatar-upload" accept="image/*">
+            <label for="avatar-upload" class="avatar-label">点击更换头像</label>
+        </div>
+
+        <!-- 姓名区域 -->
+        <div class="info-item">
+            <label for="name-input">姓名：</label>
+            <input type="text" id="name-input" placeholder="请输入姓名" value="高雯婷">
+            <span id="name-display">高雯婷</span>
+        </div>
+
+        <!-- 个人简介区域 -->
+        <div class="info-item">
+            <label for="bio-input">个人简介：</label>
+            <textarea id="bio-input" placeholder="请输入个人简介">热爱前端开发，喜欢学习新技术</textarea>
+            <span id="bio-display">热爱前端开发，喜欢学习新技术</span>
+        </div>
+
+        <!-- 保存按钮 -->
+        <button id="save-btn">保存</button>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const nameInput = document.getElementById('name-input');
+        const nameDisplay = document.getElementById('name-display');
+        const bioInput = document.getElementById('bio-input');
+        const bioDisplay = document.getElementById('bio-display');
+        const saveBtn = document.getElementById('save-btn');
+        const avatar = document.getElementById('avatar');
+        const avatarUpload = document.getElementById('avatar-upload');
+
+        // 1. 保存按钮点击事件：更新显示内容
+        saveBtn.addEventListener('click', () => {
+            const newName = nameInput.value.trim();
+            const newBio = bioInput.value.trim();
+
+            // 非空校验
+            if (!newName) {
+                alert('姓名不能为空哦~');
+                return;
+            }
+
+            // 更新显示文本
+            nameDisplay.textContent = newName;
+            bioDisplay.textContent = newBio;
+
+            // 切换显示/输入状态
+            nameInput.style.display = 'none';
+            nameDisplay.style.display = 'block';
+            bioInput.style.display = 'none';
+            bioDisplay.style.display = 'block';
+
+            alert('保存成功！');
+        });
+
+        // 2. 点击显示文本，切换回编辑状态
+        nameDisplay.addEventListener('click', () => {
+            nameDisplay.style.display = 'none';
+            nameInput.style.display = 'block';
+            nameInput.focus();
+        });
+
+        bioDisplay.addEventListener('click', () => {
+            bioDisplay.style.display = 'none';
+            bioInput.style.display = 'block';
+            bioInput.focus();
+        });
+
+        // 3. 头像上传功能：实时更新
+        avatarUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            // 校验是否为图片
+            if (!file || !file.type.startsWith('image/')) {
+                alert('请选择图片文件！');
+                return;
+            }
+
+            // 读取文件并更新头像
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                avatar.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // 4. 页面加载初始化
+        window.addEventListener('load', () => {
+            nameInput.style.display = 'block';
+            nameDisplay.style.display = 'none';
+            bioInput.style.display = 'block';
+            bioDisplay.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
